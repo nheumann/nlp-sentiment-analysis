@@ -67,3 +67,13 @@ class MultiLabelTextClassification(Pipeline):
             return [
                 {"label": self.model.config.id2label[item.argmax()], "score": item.max().item()} for item in scores
             ]
+
+def analyze_result(result, threshold = 0.5):
+        """Sort the results and throw away all labels with prediction under threshold"""
+        output = []
+        for sample in result:
+            sample = np.array(sample)
+            scores = np.array([label['score'] for label in sample])
+            predicted_samples = np.argwhere(scores > threshold).reshape(-1)
+            output.append(sorted(sample[predicted_samples], key = lambda item: item['score'], reverse=True))
+        return output

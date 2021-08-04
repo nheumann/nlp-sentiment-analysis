@@ -14,9 +14,8 @@ import spiderplot as sp
 from convokit import Corpus, download
 from IPython.display import Markdown, display
 
-from .emotion import positive_emotions, negative_emotions, is_positive_emotion, emotion_to_emoji
-from .classification_utils import MultiLabelTextClassification
-
+from .emotion import positive_emotions, negative_emotions, all_emotions, is_positive_emotion, emotion_to_emoji
+from .classification_utils import MultiLabelTextClassification, analyze_result
 
 
 
@@ -25,8 +24,7 @@ class EmotionPredictor:
         self.dataset = dataset
         self.person_label = "person"
         self.text_label = "line"
-        self.possible_emotions = ["admiration", "amusement",   "anger",    "annoyance",    "approval",    "caring",    "confusion",    "curiosity",    "desire",    "disappointment",    "disapproval",    "disgust",    "embarrassment",    "excitement",
-    "fear",    "gratitude",    "grief",    "joy",    "love",    "nervousness",    "optimism",    "pride",    "realization",    "relief",    "remorse",    "sadness",    "surprise",    "neutral"]
+        self.possible_emotions = all_emotions
         self._initialize_pipeline(model_path)
         self.total_emotions_per_person = None
        
@@ -38,20 +36,10 @@ class EmotionPredictor:
         tokenizer = AutoTokenizer.from_pretrained("distilbert-base-cased")
         self.inference_pipeline = MultiLabelTextClassification(model=model, tokenizer=tokenizer,  return_all_scores=True, device=0)
 
-    @staticmethod
-    def _analyze_result(result, threshold = 0.5):
-        """Sort the results and throw away all labels with prediction under threshold"""
-        output = []
-        for sample in result:
-            sample = np.array(sample)
-            scores = np.array([label['score'] for label in sample])
-            predicted_samples = np.argwhere(scores > threshold).reshape(-1)
-            output.append(sorted(sample[predicted_samples], key = lambda item: item['score'], reverse=True))
-        return output
 
     def _run_pipeline(self, input_data):
             prediction = self.inference_pipeline(input_data)
-            return self._analyze_result(prediction, .2)
+            return analyze_result(prediction, .2)
 
     def predict(self, precalculated_predictions: Optional[str]=None) -> None:
         emotions_per_person = {}
@@ -175,6 +163,6 @@ class EmotionPredictorZeroShot(EmotionPredictor):
         if len(input_data.line) == 1:
             prediction = [prediction]
             prediction = [[{'label' : label, 'score': value} for label, value in zip(sentence['labels'], sentence['scores'])] for sentence in prediction]
-        return self._analyze_result(prediction, .8)
+        return analyze_result(prediction, .8)
 
 

@@ -3,4 +3,8 @@ datasets
 pandas
 numpy
 jupyter
-spiderchart
+spiderplot
+convokit
+matplotlib
+seaborn
+tqdm
