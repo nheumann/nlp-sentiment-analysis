@@ -6,4 +6,4 @@ This is what the analysis looks like for the main characters of the American TV-
 <br/><br/>
 <img src="https://user-images.githubusercontent.com/52076234/128535469-1d8dee67-91ad-4eba-b94f-b7df3600f442.png" width="100%">
 <br/><br/>
-<img src="https://user-images.githubusercontent.com/52076234/128535453-b2ce2468-192a-4f5e-8ce5-3e076cbf790d.png" width="70%">
+<img src="https://user-images.githubusercontent.com/52076234/128535453-b2ce2468-192a-4f5e-8ce5-3e076cbf790d.png" width="80%">
